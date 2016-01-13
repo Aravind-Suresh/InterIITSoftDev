@@ -21,7 +21,7 @@ To display student data and save it, add a param --save.
 $ python main.py -r <rollNumber> --save
 ```
 
-To search and display student data which is saved locally,
+To search and display student data which is saved locally, add a param --load.
 
 ```
 $ python main.py -r <rollNumber> --load

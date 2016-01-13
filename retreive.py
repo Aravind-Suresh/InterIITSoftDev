@@ -3,6 +3,7 @@ import urllib, urllib2
 from bs4 import BeautifulSoup
 from PIL import Image
 import os
+import Tkinter as ttk
 
 def getDetails(rollNumber):
     # Creating request
@@ -40,5 +41,14 @@ def showImage(filePath):
     img.show()
 
 def displayData(details):
-    # TODO: Create window to display data
+    root = ttk.Tk()
+    idx = 0
+    for key in details:
+        if key == '__image_path__':
+            continue
+        ttk.Label(root, text=key).grid(column=0, row=idx)
+        ttk.Label(root, text=details[key]).grid(column=1, row=idx)
+        idx += 1
+
     showImage(details['__image_path__'])
+    root.mainloop()

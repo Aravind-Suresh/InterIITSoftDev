@@ -3,7 +3,12 @@ import os, sys, argparse
 import json
 from retreive import *
 from search import *
+import atexit
 
+def deleteFile(path):
+    os.remove(path)
+
+# Path variables
 DATA_PATH = os.getcwd() + os.sep + "data"
 DATA_DETAILS_PATH = DATA_PATH + os.sep + "details"
 DATA_IMAGE_PATH = DATA_PATH + os.sep + "images"
@@ -13,7 +18,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--roll_number', help='Roll number', required=True)
     parser.add_argument('-s', '--save', help='Save data', action='store_true')
-    parser.add_argument('-l', '--load', help='Search data', action='store_true')
+    parser.add_argument('-l', '--load', help='Search and load data', action='store_true')
     args = parser.parse_args()
 
     rollNumber = args.roll_number.upper()
@@ -46,4 +51,4 @@ if __name__ == '__main__':
 
     elif not toLoad and not toSave:
         # Removing the image file which was retrieved earlier
-        os.rmdir(imagePath)
+        atexit.register(deleteFile, details['__image_path__'])

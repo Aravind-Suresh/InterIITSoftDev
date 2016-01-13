@@ -1,8 +1,8 @@
+# Necessary imports
 import urllib, urllib2
-import os, sys, argparse
-import json
 from bs4 import BeautifulSoup
 from PIL import Image
+import os
 
 def getDetails(rollNumber):
     # Creating request
@@ -29,9 +29,9 @@ def getDetails(rollNumber):
 
     return details
 
-def getImage(rollNumber):
+def getImage(path, rollNumber):
     url = "https://photos.iitm.ac.in/byroll.php?roll=" + rollNumber.upper()
-    filePath = os.getcwd() + os.sep + "data" + os.sep + "images" + os.sep + rollNumber + ".jpg"
+    filePath = path + os.sep + rollNumber + ".jpg"
     urllib.urlretrieve(url, filePath)
     return filePath
 
@@ -42,33 +42,3 @@ def showImage(filePath):
 def displayData(details):
     # TODO: Create window to display data
     showImage(details['__image_path__'])
-
-if __name__ == '__main__':
-    # Parsing arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-r','--roll_number', help='Roll number', required=True)
-    parser.add_argument('-s','--save', help='Save data', action='store_true')
-    args = parser.parse_args()
-
-    toSave = False
-    if args.save:
-        toSave = True
-
-    rollNumber = args.roll_number.upper()
-
-    details = getDetails(rollNumber)
-    imagePath = getImage(rollNumber)
-    details['__image_path__'] = imagePath
-
-    # Displaying student details and showing image
-    displayData(details)
-
-    if toSave:
-        # Saving details to json file
-        outFilePath = os.getcwd() + os.sep + "data" + os.sep + "details" + os.sep + rollNumber + ".json"
-        with open(outFilePath, 'w') as outfile:
-            json.dump(details, outfile)
-
-    else:
-        # Removing the image file which was retrieved earlier
-        os.rmdir(imagePath)

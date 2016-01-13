@@ -5,6 +5,7 @@ The repository consists of a python tool to load and display student data from t
 ## Dependencies
 * PIL
 * Tkinter
+* BeautifulSoup
 
 ## Trial
 

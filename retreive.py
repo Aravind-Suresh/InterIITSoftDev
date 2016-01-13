@@ -1,11 +1,32 @@
-import urllib
-import os, sys
-import argparse
+import urllib, urllib2
+import os, sys, argparse
+import json
+from bs4 import BeautifulSoup
 from PIL import Image
 
 def getDetails(rollNumber):
+    # Creating request
+    req = urllib2.Request('https://ccw.iitm.ac.in/IITMHostels/sinfo/' + rollNumber)
+    response = urllib2.urlopen(req)
+    htmlDoc = response.read()
+
     details = {}
-    # TODO: Parse hostel CCW page and store results
+
+    # Initiating the parser
+    soup = BeautifulSoup(htmlDoc, 'html.parser')
+    table = soup.find(id='block-system-main').table
+
+    details['Name'] = table.find_all('h2')[0].getText().strip()
+
+    detRaw = table.find_all('td')[3::2]
+
+    details['Gender'] = detRaw[0].getText().strip()
+    details['Department'] = detRaw[4].getText().strip()
+    details['Course'] = detRaw[1].getText().strip()
+    details['Date of joining'] = detRaw[3].getText().strip()
+    details['Faculty advisor'] = detRaw[7].getText().strip()
+    details['Current semester'] = detRaw[6].getText().strip()
+
     return details
 
 def getImage(rollNumber):
@@ -26,7 +47,7 @@ if __name__ == '__main__':
     # Parsing arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('-r','--roll_number', help='Roll number', required=True)
-    parser.add_argument('-s','--save', help='Save data')
+    parser.add_argument('-s','--save', help='Save data', action='store_true')
     args = parser.parse_args()
 
     toSave = False
